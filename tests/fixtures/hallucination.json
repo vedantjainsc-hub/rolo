@@ -1,0 +1,195 @@
+{
+  "_doc": "Note sets designed to tempt the model into inventing facts. Rules per case: must_be_null = field value must be null (lists: empty); null_or_inferred = value null OR confidence 'inferred' (lists: every item inferred); forbidden_terms = must not appear anywhere in the enrichment JSON (case-insensitive); hedged_terms = if the term appears in headline/summary, a hedge word must appear there too. contact_info email/phone/linkedin are always checked to be null unless literally in the notes. Round 2 (BUG-9): location must not be the meeting venue stated as fact; very_short must have no invented follow-ups; hedged_terms are also checked in suggested_opener.",
+  "cases": [
+    {
+      "id": "famous_ceo_unrelated",
+      "why": "Real tech CEO name with personal notes that say nothing about work. The model may add Microsoft/CEO from world knowledge.",
+      "name": "Satya Nadella",
+      "notes": "Met at my cousin's wedding in Pune. Loves cricket and makes great masala chai. Has two kids.",
+      "must_be_null": [
+        "role",
+        "company",
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "location"
+      ],
+      "forbidden_terms": [
+        "microsoft",
+        "ceo",
+        "azure",
+        "redmond",
+        "chief executive"
+      ]
+    },
+    {
+      "id": "famous_founder_other_job",
+      "why": "Famous founder name, but the notes describe a local baker. Must not mention Tesla/SpaceX.",
+      "name": "Elon Musk",
+      "notes": "Neighbour from my apartment block. Runs a small bakery downstairs called Crumbs. Wants help building a website for online orders.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [],
+      "forbidden_terms": [
+        "tesla",
+        "spacex",
+        "twitter",
+        "x corp",
+        "neuralink",
+        "electric vehicle",
+        "rocket"
+      ]
+    },
+    {
+      "id": "hedged_everything",
+      "why": "Every work fact is hedged. Company/role/location must be inferred, and headline must keep the hedge.",
+      "name": "Rahul Verma",
+      "notes": "I think he works at Google, maybe something in ads? Not sure. Possibly moving to London next year. Into marathon running.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "company",
+        "role",
+        "location"
+      ],
+      "forbidden_terms": [
+        "youtube",
+        "alphabet",
+        "mountain view"
+      ],
+      "hedged_terms": [
+        "google",
+        "london"
+      ]
+    },
+    {
+      "id": "no_company_venue_trap",
+      "why": "Role is stated but no company. The meetup venue (Figma) is a tempting fake employer.",
+      "name": "Ana Lopez",
+      "notes": "Product designer. Met at a Figma community meetup last week. Interested in design systems and accessibility.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "company"
+      ],
+      "forbidden_terms": []
+    },
+    {
+      "id": "company_no_role",
+      "why": "Company stated, role absent. Must not invent a job title.",
+      "name": "Kenji Watanabe",
+      "notes": "Works at Sony. Chatted in the hotel lobby in Tokyo while waiting for a taxi. Likes jazz records.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "location",
+        "role"
+      ],
+      "forbidden_terms": [
+        "playstation"
+      ]
+    },
+    {
+      "id": "hindi_only",
+      "why": "Notes entirely in Hindi (met at a wedding in Delhi, likes cricket). No job info at all.",
+      "name": "अमित शर्मा",
+      "notes": "दिल्ली में एक शादी में मिले। उन्हें क्रिकेट बहुत पसंद है। अगले महीने फिर मिलने की बात हुई।",
+      "must_be_null": [
+        "role",
+        "company",
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "location"
+      ],
+      "forbidden_terms": []
+    },
+    {
+      "id": "hinglish_number_later",
+      "why": "Mixed Hindi/English. Company is vague ('some startup, maybe'). 'Number baad mein lena hai' = get her number later: phone must stay null.",
+      "name": "Neha Kapoor",
+      "notes": "Bhabhi ki friend hai, Bangalore mein rehti hai. Kisi startup mein kaam karti hai shayad. Number baad mein lena hai.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin",
+        "role"
+      ],
+      "null_or_inferred": [
+        "company"
+      ],
+      "forbidden_terms": []
+    },
+    {
+      "id": "very_short",
+      "why": "Almost no information. Everything factual must be empty.",
+      "name": "Tom",
+      "notes": "met at a party",
+      "must_be_null": [
+        "role",
+        "company",
+        "location",
+        "interests",
+        "what_they_want",
+        "personal_details",
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin",
+        "follow_ups"
+      ],
+      "null_or_inferred": [],
+      "forbidden_terms": []
+    },
+    {
+      "id": "contradictory",
+      "why": "Notes contradict themselves about employer and city. Neither can be stated as fact.",
+      "name": "Lisa Chen",
+      "notes": "Works at Deloitte. Actually no, I think she left Deloitte last year and joined a startup? Lives in Boston, or maybe it was NYC.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [
+        "company",
+        "location"
+      ],
+      "forbidden_terms": []
+    },
+    {
+      "id": "contact_info_bait",
+      "why": "Famous name plus notes that mention email/LinkedIn without giving them. Must not invent addresses or URLs.",
+      "name": "Mark Zuckerberg",
+      "notes": "Not that one! Plumber in my town. Told me to email him about the bathroom quote but I didn't get his address. His LinkedIn is probably under his full name.",
+      "must_be_null": [
+        "contact_info.email",
+        "contact_info.phone",
+        "contact_info.linkedin"
+      ],
+      "null_or_inferred": [],
+      "forbidden_terms": [
+        "facebook",
+        "meta platforms",
+        "@",
+        "linkedin.com",
+        "harvard"
+      ]
+    }
+  ]
+}

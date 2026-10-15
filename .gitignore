@@ -1,0 +1,17 @@
+backend/data/
+__pycache__/
+.venv/
+node_modules/
+frontend/dist/
+.DS_Store
+.pytest_cache/
+*.db
+certs/
+backend/asr/.build/
+releases/
+tests/artifacts/
+.env
+.env.local
+*.log
+test-results/
+playwright-report/

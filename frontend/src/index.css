@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Rolo design tokens — docs/DESIGN.md */
+@theme {
+  --color-navy-900: #0b1f3a;
+  --color-navy-700: #1e3a5f;
+  --color-navy-500: #3d5a80;
+  --color-navy-100: #e6ecf3;
+  --color-navy-50: #f5f7fa;
+  --color-line: #d9e0e8;
+  --color-gold: #b8925a;
+  --color-success: #2f7d5b;
+  --color-danger: #b23a3a;
+
+  --font-sans: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --text-title: 28px;
+  --text-title--line-height: 34px;
+  --text-name: 20px;
+  --text-name--line-height: 28px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-meta: 13px;
+  --text-meta--line-height: 18px;
+  --text-tiny: 12px;
+  --text-tiny--line-height: 16px;
+
+  --radius-card: 12px;
+  --shadow-card: 0 1px 2px rgba(11, 31, 58, 0.06);
+}
+
+:root {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  background: var(--color-navy-50);
+  color: var(--color-navy-900);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Focus ring: white gap, gold detail, navy outline. Visible on white and on navy. */
+:focus-visible {
+  outline: 2px solid var(--color-navy-900);
+  outline-offset: 4px;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--color-gold);
+}
+.on-navy :focus-visible {
+  outline-color: #fff;
+}
+
+@utility label-caps {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@keyframes rolo-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.skeleton {
+  background: var(--color-navy-100);
+  border-radius: 6px;
+  animation: rolo-pulse 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+  * { scroll-behavior: auto !important; transition: none !important; }
+}
+.on-navy .on-light :focus-visible {
+  outline-color: var(--color-navy-900);
+}
